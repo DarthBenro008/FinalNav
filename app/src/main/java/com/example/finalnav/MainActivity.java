@@ -8,6 +8,7 @@ import androidx.drawerlayout.widget.DrawerLayout;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
 
+import android.content.res.Configuration;
 import android.os.Bundle;
 import android.view.MenuItem;
 
@@ -27,10 +28,20 @@ public class MainActivity extends AppCompatActivity {
         setSupportActionBar(toolbar);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         mDrawer = (DrawerLayout) findViewById(R.id.drawer_layout);
-        nvDrawer = (NavigationView) findViewById(R.id.nvView);
-        setupDrawerContent(nvDrawer);
+        drawerToggle = setupDrawerToggle();
+        drawerToggle.syncState();
+        drawerToggle.setDrawerIndicatorEnabled(true);
+        mDrawer.addDrawerListener(drawerToggle);
+       nvDrawer = (NavigationView) findViewById(R.id.nvView);
+       setupDrawerContent(nvDrawer);
 
-        //loadFrag(new ffrag());
+
+    }
+
+    private ActionBarDrawerToggle setupDrawerToggle() {
+        // NOTE: Make sure you pass in a valid toolbar reference.  ActionBarDrawToggle() does not require it
+        // and will not render the hamburger icon without it.
+        return new ActionBarDrawerToggle(this, mDrawer, toolbar, R.string.drawer_open,  R.string.drawer_close);
     }
     private void setupDrawerContent(NavigationView navigationView) {
 
@@ -114,4 +125,29 @@ public class MainActivity extends AppCompatActivity {
         FragmentManager fragmentManager = getSupportFragmentManager();
         fragmentManager.beginTransaction().replace(R.id.flContent, incomingFrag).commit();
     }
+
+    @Override
+
+    protected void onPostCreate(Bundle savedInstanceState) {
+
+        super.onPostCreate(savedInstanceState);
+
+        // Sync the toggle state after onRestoreInstanceState has occurred.
+
+        drawerToggle.syncState();
+
+    }
+
+    @Override
+
+    public void onConfigurationChanged(Configuration newConfig) {
+
+        super.onConfigurationChanged(newConfig);
+
+        // Pass any configuration change to the drawer toggles
+
+        drawerToggle.onConfigurationChanged(newConfig);
+
+    }
+
 }
